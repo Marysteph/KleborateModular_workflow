@@ -6,4 +6,7 @@
     'Klebsiella africana': {'min_genome_size': 5000000, 'max_genome_size': 6500000},
     'Escherichia coli': {'min_genome_size': 4500000, 'max_genome_size': 5500000},
     'Klebsiella oxytoca': {'min_genome_size': 5000000, 'max_genome_size': 6500000}
+    'Klebsiella grimontii': {'min_genome_size': 5000000, 'max_genome_size': 6500000}
+    'Klebsiella michiganensis': {'min_genome_size': 5000000, 'max_genome_size': 6500000}
+    'Klebsiella pasteurii': {'min_genome_size': 5000000, 'max_genome_size': 6500000}
 }

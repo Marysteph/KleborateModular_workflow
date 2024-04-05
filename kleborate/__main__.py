@@ -100,7 +100,8 @@ def main():
             #print(results)
         
             for module in module_run_order:
-                print(module)
+                #print(module)
+                #print(results['enterobacterales__species__species'])
                 species = None
                 kp_complex = is_kp_complex(results)
                 ko_complex = is_ko_complex(results)

@@ -20,6 +20,8 @@ def is_kp_complex(results):
     """
     assert 'species' in results
     species = results['species']
+    #assert 'species' in results['enterobacterales__species__species']
+    #species = results['enterobacterales__species__species']
     
     if species.startswith('Klebsiella pneumoniae'):
         return True
