@@ -101,21 +101,22 @@ def main():
         
             for module in module_run_order:
                 #print(module)
-                #print(results['enterobacterales__species__species'])
-                species = None
-                kp_complex = is_kp_complex(results)
-                ko_complex = is_ko_complex(results)
-                escherichia = is_escherichia(results)
-
-                if kp_complex:
-                    species = 'kp_complex'
-                elif ko_complex:
-                    species = 'ko_complex'
-                elif escherichia:
-                    species = 'Escherichia'
 
                 module_results = modules[module].get_results(unzipped_assembly, minimap2_index,
                                                              args, results, species)
+                if module == 'enterobacterales__species':
+                    species = None
+                    kp_complex = is_kp_complex(results)
+                    ko_complex = is_ko_complex(results)
+                    escherichia = is_escherichia(results)
+
+                    if kp_complex:
+                        species = 'kp_complex'
+                    elif ko_complex:
+                        species = 'ko_complex'
+                    elif escherichia:
+                        species = 'Escherichia'
+
                 results.update({f'{module}__{header}': result
                                 for header, result in module_results.items()})
             output_results(full_headers, stdout_headers, args.outfile, results)
