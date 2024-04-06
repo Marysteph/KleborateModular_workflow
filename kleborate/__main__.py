@@ -83,7 +83,7 @@ def main():
     args = parse_arguments(sys.argv[1:], all_module_names, modules)
     print_modules(args, all_module_names, modules)
     module_names, check_modules, pass_modules = get_used_module_names(args, all_module_names, get_presets())
-    module_names, module_run_order, external_programs = check_modules(args, modules, module_names, preset_check_modules, preset_pass_modules)
+    module_names, module_run_order, external_programs = check_modules(args, modules, module_names)
     #print(module_run_order)
     check_assemblies(args)
 
@@ -112,11 +112,12 @@ def main():
                     
                     check_function = getattr(__main__, check) # the function whose name is specified in the presets
                     
-                	if check_function(module_results):
+                	if not check_function(module_results):
         				pass_check = False
         
         	# proceed through all other modules
         	if pass_check:
+        	
 				for module in module_run_order:
 					#print(module)
 				
@@ -337,17 +338,6 @@ def check_modules(args, modules, module_names, preset_check_modules, preset_pass
     #print(f"Final module_names (after including prerequisites): {module_names}")
 
     dependency_graph = {m: modules[m].prerequisite_modules() for m in module_names}
-    
-     # KH: if presets are specified, the 'check' modules need to be run first, add these as prerequisites
-    if len(preset_check_modules) > 0:
-    	if len(preset_pass_modules) > 0:
-    		for p in preset_pass_modules:
-        		if p in dependency_graph:
-        			for c in preset_check_modules:
-        				if c not in dependency_graph[p]:
-        					dependency_graph[p].append(c)
-        		else:
-        			dependency_graph[p] = preset_check_modules
     
     return module_names, get_run_order(dependency_graph), sorted(all_external_programs)
 
