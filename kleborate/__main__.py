@@ -102,28 +102,32 @@ def main():
             
             # if we have 'check' modules in the preset, run these and see if we pass
             if len(check_modules) > 0:
-                
-                for (module, check) in presets[args.preset]['check']:
-                    module_results = modules[module].get_results(unzipped_assembly, minimap2_index,
+            	
+            	for (module, check) in presets[args.preset]['check']:
+            		module_results = modules[module].get_results(unzipped_assembly, minimap2_index,
                                                              args, results, species)
                                                              
-                    results.update({f'{module}__{header}': result for header, result in module_results.items()})
-                                
-                    if module_results[0] not in check:
-                        pass_check = False
+                    results.update({f'{module}__{header}': result
+                                for header, result in module_results.items()})
+                    
+                    check_function = getattr(__main__, check) # the function whose name is specified in the presets
+                    
+                	if check_function(module_results):
+        				pass_check = False
         
-            # proceed through all other modules
-            if pass_check:
-                for module in module_run_order:
-                    #print(module)
-                
-                    if module not in preset_check_modules:
-                
-                        module_results = modules[module].get_results(unzipped_assembly, minimap2_index,
-                                                                 args, results, species)
+        	# proceed through all other modules
+        	if pass_check:
+				for module in module_run_order:
+					#print(module)
+				
+					if module not in preset_check_modules:
+				
+						module_results = modules[module].get_results(unzipped_assembly, minimap2_index,
+																 args, results, species)
 
-                        results.update({f'{module}__{header}': result for header, result in module_results.items()})
-                                    
+						results.update({f'{module}__{header}': result
+									for header, result in module_results.items()})
+									
             # write results
             output_results(full_headers, stdout_headers, args.outfile, results)
 
@@ -148,7 +152,7 @@ def print_modules(args, all_module_names, modules):
 
 def get_presets():
     kpsc_modules = {
-        'check': ('enterobacterales__species', ["Klebsiella pneumoniae", "Klebsiella variicola"]),
+        'check': [('enterobacterales__species', 'is_kp_complex')],
         'pass': [
             'enterobacterales__species',
             'general__contig_stats', 'klebsiella_pneumo_complex__mlst',
@@ -159,7 +163,7 @@ def get_presets():
     }
 
     kosc_modules = {
-        'check': ('enterobacterales__species', is_ko_complex),
+        'check': ('enterobacterales__species', 'is_ko_complex'),
         'pass': [
             'enterobacterales__species',
             'general__contig_stats', 'klebsiella_oxytoca_complex__mlst', 'klebsiella__ybst', 'klebsiella__cbst', 'klebsiella__abst', 'klebsiella__smst', 'klebsiella__rmst'
@@ -167,7 +171,7 @@ def get_presets():
     }
 
     escherichia_modules = {
-        'check': ('enterobacterales__species', is_escherichia),
+        'check': ('enterobacterales__species', 'is_escherichia'),
         'pass': [
             'enterobacterales__species',
             'general__contig_stats', 'escherichia__mlst_achtman', 'escherichia__mlst_pasteur'
@@ -336,14 +340,14 @@ def check_modules(args, modules, module_names, preset_check_modules, preset_pass
     
      # KH: if presets are specified, the 'check' modules need to be run first, add these as prerequisites
     if len(preset_check_modules) > 0:
-        if len(preset_pass_modules) > 0:
-            for p in preset_pass_modules:
-                if p in dependency_graph:
-                    for c in preset_check_modules:
-                        if c not in dependency_graph[p]:
-                            dependency_graph[p].append(c)
-                else:
-                    dependency_graph[p] = preset_check_modules
+    	if len(preset_pass_modules) > 0:
+    		for p in preset_pass_modules:
+        		if p in dependency_graph:
+        			for c in preset_check_modules:
+        				if c not in dependency_graph[p]:
+        					dependency_graph[p].append(c)
+        		else:
+        			dependency_graph[p] = preset_check_modules
     
     return module_names, get_run_order(dependency_graph), sorted(all_external_programs)
 
