@@ -112,7 +112,7 @@ def main():
                 elif ko_complex:
                     species = 'ko_complex'
                 elif escherichia:
-                    species = 'Escherichia coli'
+                    species = 'Escherichia'
 
                 module_results = modules[module].get_results(unzipped_assembly, minimap2_index,
                                                              args, results, species)
