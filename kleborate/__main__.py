@@ -1,7 +1,6 @@
 """
-Copyright 2023 Kat Holt
-Copyright 2023 Ryan Wick (rrwick@gmail.com)
-https://github.com/katholt/Kleborate/
+Copyright 2024 Mary Maranga, Kat Holt, Ryan Wick
+https://github.com/klebgenomics/KleborateModular/
 
 This file is part of Kleborate. Kleborate is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by the Free Software Foundation,
@@ -83,7 +82,7 @@ def main():
     all_module_names, modules = import_modules()
     args = parse_arguments(sys.argv[1:], all_module_names, modules)
     print_modules(args, all_module_names, modules)
-    module_names = get_used_module_names(args, all_module_names, get_presets())
+    module_names, check_modules, pass_modules = get_used_module_names(args, all_module_names, get_presets())
     module_names, module_run_order, external_programs = check_modules(args, modules, module_names)
     #print(module_run_order)
     check_assemblies(args)
@@ -98,27 +97,39 @@ def main():
                                                   temp_dir)
             results = {'assembly': assembly}
             #print(results)
-        
-            for module in module_run_order:
-                #print(module)
-
-                module_results = modules[module].get_results(unzipped_assembly, minimap2_index,
+            
+            pass_check = True # default, assume no check and run all modules
+            
+            # if we have 'check' modules in the preset, run these and see if we pass
+            if len(check_modules) > 0:
+            	
+            	for (module, check) in presets[args.preset]['check']:
+            		module_results = modules[module].get_results(unzipped_assembly, minimap2_index,
                                                              args, results, species)
-                if module == 'enterobacterales__species':
-                    species = None
-                    kp_complex = is_kp_complex(results)
-                    ko_complex = is_ko_complex(results)
-                    escherichia = is_escherichia(results)
-
-                    if kp_complex:
-                        species = 'kp_complex'
-                    elif ko_complex:
-                        species = 'ko_complex'
-                    elif escherichia:
-                        species = 'Escherichia'
-
-                results.update({f'{module}__{header}': result
+                                                             
+                    results.update({f'{module}__{header}': result
                                 for header, result in module_results.items()})
+                    
+                    check_function = getattr(__main__, check) # the function whose name is specified in the presets
+                    
+                	if not check_function(module_results):
+        				pass_check = False
+        
+        	# proceed through all other modules
+        	if pass_check:
+        	
+				for module in module_run_order:
+					#print(module)
+				
+					if module not in preset_check_modules:
+				
+						module_results = modules[module].get_results(unzipped_assembly, minimap2_index,
+																 args, results, species)
+
+						results.update({f'{module}__{header}': result
+									for header, result in module_results.items()})
+									
+            # write results
             output_results(full_headers, stdout_headers, args.outfile, results)
 
 
@@ -142,7 +153,7 @@ def print_modules(args, all_module_names, modules):
 
 def get_presets():
     kpsc_modules = {
-        'check': ('enterobacterales__species', is_kp_complex),
+        'check': [('enterobacterales__species', 'is_kp_complex')],
         'pass': [
             'enterobacterales__species',
             'general__contig_stats', 'klebsiella_pneumo_complex__mlst',
@@ -153,7 +164,7 @@ def get_presets():
     }
 
     kosc_modules = {
-        'check': ('enterobacterales__species', is_ko_complex),
+        'check': ('enterobacterales__species', 'is_ko_complex'),
         'pass': [
             'enterobacterales__species',
             'general__contig_stats', 'klebsiella_oxytoca_complex__mlst', 'klebsiella__ybst', 'klebsiella__cbst', 'klebsiella__abst', 'klebsiella__smst', 'klebsiella__rmst'
@@ -161,7 +172,7 @@ def get_presets():
     }
 
     escherichia_modules = {
-        'check': ('enterobacterales__species', is_escherichia),
+        'check': ('enterobacterales__species', 'is_escherichia'),
         'pass': [
             'enterobacterales__species',
             'general__contig_stats', 'escherichia__mlst_achtman', 'escherichia__mlst_pasteur'
@@ -227,19 +238,24 @@ def get_used_module_names(args, all_module_names, presets):
     if args.preset is None and args.modules is None:
         sys.exit('Error: either --preset or --modules is required')
     module_names = []
+    preset_check_modules = []
+    preset_pass_modules = []
     if args.preset:
         if args.preset not in presets:
             sys.exit(f'Error: {args.preset} is not a valid preset')
         # Skip 'check' and other non-module keys when adding preset modules
-        preset_modules = [m for m in presets[args.preset]['pass'] if m in all_module_names]
-        module_names += preset_modules
+        # KH: include 'check'
+        preset_check_modules = [m for m in presets[args.preset]['check'] if m in all_module_names]
+        preset_pass_modules = [m for m in presets[args.preset]['pass'] if m in all_module_names]
+        module_names += preset_check_modules
+        module_names += preset_pass_modules
     if args.modules:
         for m in args.modules.split(','):
             if m not in all_module_names:
                 sys.exit(f'Error: {m} is not a valid module name')
             if m not in module_names:
                 module_names.append(m)
-    return module_names
+    return (module_names, preset_check_modules, preset_pass_modules) # return presets
 
 
 # def get_used_module_names(args, all_module_names, presets):
@@ -295,7 +311,7 @@ def import_modules():
     return all_module_names, modules
 
 
-def check_modules(args, modules, module_names):
+def check_modules(args, modules, module_names, preset_check_modules, preset_pass_modules):
     """
     This function checks the options, prerequisites external requirements of the used modules. If
     any fail, the program will quit with an error. It returns:
@@ -322,6 +338,7 @@ def check_modules(args, modules, module_names):
     #print(f"Final module_names (after including prerequisites): {module_names}")
 
     dependency_graph = {m: modules[m].prerequisite_modules() for m in module_names}
+    
     return module_names, get_run_order(dependency_graph), sorted(all_external_programs)
 
 
