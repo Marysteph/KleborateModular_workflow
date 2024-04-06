@@ -108,9 +108,9 @@ def main():
                 escherichia = is_escherichia(results)
 
                 if kp_complex:
-                    species = 'Klebsiella'
+                    species = 'kp_complex'
                 elif ko_complex:
-                    species = 'Klebsiella oxytoca'
+                    species = 'ko_complex'
                 elif escherichia:
                     species = 'Escherichia coli'
 
