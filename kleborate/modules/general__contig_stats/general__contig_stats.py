@@ -52,9 +52,10 @@ def check_external_programs():
 def data_dir():
     return pathlib.Path(__file__).parents[0] 
 
-def get_results(assembly, minimap2_index, args, previous_results, species):
+def get_results(assembly, minimap2_index, args, previous_results):
     species_file = data_dir() / 'species_specification.txt'
     species_specification_dict = load_species_specifications(species_file)
+    species=previous_results['enterobacterales__species__species']
     #print(previous_results)
     
     contig_count, n50, longest_contig, total_size, ambiguous_bases = get_contig_stats(assembly)
@@ -120,9 +121,9 @@ def get_qc_warnings(total_size, n50, ambiguous_bases, species, species_specifica
     min_size, max_size = species_spec['min_genome_size'], species_spec['max_genome_size']
 
     if total_size < min_size:
-        warnings.append('total_size below min threshold')
+        warnings.append('total_size')
     elif total_size > max_size:
-        warnings.append('total_size above max threshold')
+        warnings.append('total_size')
     
 
     if n50 < 10000:
