@@ -86,7 +86,7 @@ def main():
     top_headers, full_headers, stdout_headers = get_headers(module_names, modules)
     output_headers(top_headers, full_headers, stdout_headers, args.outfile)
 
-    # Define preset_check_modules based on presets
+    # Define preset_check_modules based on presets function
     presets = get_presets() 
     preset_check_modules = [module for module, _ in presets[args.preset]['check']]
 
@@ -387,7 +387,7 @@ def output_headers(top_headers, full_headers, stdout_headers, outfile):
 #             sys.exit(f'Error: results contained a value ({h}) that is not covered by the output headers')
 
 def output_results(full_headers, stdout_headers, outfile, results):
-    # Exclude specified keys
+    # Exclude specified keys from kaptive module
     excluded_keys = {'k_Assembly', 'k_Truncated genes, details', 'o_Assembly', 'o_Truncated genes, details'}
     filtered_headers = [h for h in full_headers if h not in excluded_keys]
 
