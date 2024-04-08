@@ -13,16 +13,12 @@ details. You should have received a copy of the GNU General Public License along
 not, see <https://www.gnu.org/licenses/>.
 """
 
-
 def is_kp_complex(results):
     """
     Returns True if the species call is in the Kp-complex, otherwise false.
     """
     assert 'species' in results
     species = results['species']
-    #assert 'species' in results['enterobacterales__species__species']
-    #species = results['enterobacterales__species__species']
-    
     if species.startswith('Klebsiella pneumoniae'):
         return True
     if species.startswith('Klebsiella quasipneumoniae'):
