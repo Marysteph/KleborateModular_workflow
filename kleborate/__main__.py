@@ -89,28 +89,24 @@ def main():
     # Define preset_check_modules based on presets
     presets = get_presets() 
     preset_check_modules = [module for module, _ in presets[args.preset]['check']]
-    
-
 
     for assembly in args.assemblies:
         with tempfile.TemporaryDirectory() as temp_dir:
             unzipped_assembly = gunzip_assembly_if_necessary(assembly, temp_dir)
             minimap2_index = build_minimap2_index(assembly, unzipped_assembly, external_programs, temp_dir)
             results = {'assembly': assembly}
-            
 
-            pass_check = True  
-
+            pass_check = True  # default, assume no check and run all modules
 
             # if we have 'check' modules in the preset, run these and see if we pass
-            if len(check_module_list) > 0: 
+            if len(check_module_list) > 0:  
 
                 for module, check in presets[args.preset]['check']:
                     module_results = modules[module].get_results(unzipped_assembly, minimap2_index, args, results)
 
                     results.update({f'{module}__{header}': result for header, result in module_results.items()})
 
-                    #check_function = getattr(__main__, check)  
+                    #check_function = getattr(__main__, check)  # the function whose name is specified in the presets
                     check_function = globals()[check]
 
 
@@ -121,7 +117,7 @@ def main():
             if pass_check:
 
                 for module in module_run_order:
-                    
+                   
 
                     if module not in preset_check_modules:
 
@@ -225,7 +221,6 @@ def get_used_module_names(args, all_module_names, presets): # modified on saturd
                 module_names.append(m)
 
     return module_names, check_modules, pass_modules
-
 
 
 def get_all_module_names():
@@ -379,6 +374,17 @@ def output_headers(top_headers, full_headers, stdout_headers, outfile):
         o.write('\n')
         o.write('\t'.join(trimmed_full_headers))
         o.write('\n')
+
+
+# def output_results(full_headers, stdout_headers, outfile, results):
+#     print('\t'.join([str(results[x]).strip("[] ").replace("'", "") for x in stdout_headers]))
+#     with open(outfile, 'at') as o:
+#         o.write('\t'.join([str(results[x]).strip("[] ").replace("'", "") for x in full_headers]))
+#         o.write('\n')
+
+#     for h in results.keys():
+#         if h not in full_headers:
+#             sys.exit(f'Error: results contained a value ({h}) that is not covered by the output headers')
 
 def output_results(full_headers, stdout_headers, outfile, results):
     # Exclude specified keys
