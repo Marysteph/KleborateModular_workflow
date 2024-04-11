@@ -41,9 +41,9 @@ def check_external_programs():
 
 
 def get_results(assembly, minimap2_index, args, previous_results):
-    has_ybt = (previous_results['klebsiella__ybst__st'] != 'NA')
-    has_aero = (previous_results['klebsiella__abst__st'] != 'NA')
-    has_coli = (previous_results['klebsiella__cbst__st'] != 'NA')
+    has_ybt = (previous_results['klebsiella__ybst__YbST'] != 'NA')
+    has_aero = (previous_results['klebsiella__abst__AbST'] != 'NA')
+    has_coli = (previous_results['klebsiella__cbst__CbST'] != 'NA')
 
     if has_coli and has_aero:
         return {'virulence_score': '5'}

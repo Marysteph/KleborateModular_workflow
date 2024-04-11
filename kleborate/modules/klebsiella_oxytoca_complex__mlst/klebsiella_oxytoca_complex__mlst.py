@@ -29,9 +29,9 @@ def prerequisite_modules():
 
 
 def get_headers():
-    full_headers = ['st', 'clonal_complex',
+    full_headers = ['ST', 'clonal_complex',
                     'gapA', 'infB', 'mdh', 'pgi', 'phoE', 'rpoB', 'tonB']
-    stdout_headers = ['st']
+    stdout_headers = ['ST']
     return full_headers, stdout_headers
 
 
@@ -76,7 +76,7 @@ def get_results(assembly, minimap2_index, args, previous_results):
              args.klebsiella_oxytoca_complex__mlst_min_identity, args.klebsiella_oxytoca_complex__mlst_min_coverage,
              args.klebsiella_oxytoca_complex__mlst_required_exact_matches)
 
-    return {'st': st, 'clonal_complex': clonal_complex,
+    return {'ST': st, 'clonal_complex': clonal_complex,
             'gapA': alleles['gapA'], 'infB': alleles['infB'], 'mdh': alleles['mdh'],
             'pgi': alleles['pgi'], 'phoE': alleles['phoE'], 'rpoB': alleles['rpoB'],
             'tonB': alleles['tonB']}
