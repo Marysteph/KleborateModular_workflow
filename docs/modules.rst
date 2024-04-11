@@ -26,3 +26,4 @@ Available modules for Kleborate
 * Resistance score (0-3) for the Klebsiella pneumoniae species complex, based on the results of the kpsc_amr module
 * Resistance gene classes count
 * Resistance genes count
+* In silico serotyping of K and L locus for the Klebsiella pneumoniae species complex

@@ -6,10 +6,11 @@ Kleborate will attempt to identify the species of each input assembly. It does t
 
 Here is an annotated tree of the reference assemblies, made by applying the `FastME <https://academic.oup.com/mbe/article/32/10/2798/1212138>`_ algorithm to pairwise Mash distances:
 
+.. figure:: https://github.com/katholt/Kleborate/blob/main/images/species_tree.png
+   :align: center
+   :width: 90%
+   :alt: Klebsiella species tree
 
-.. raw:: html
-
-   <p align="center"><img src="https://github.com/katholt/Kleborate/blob/main/images/species_tree.png" alt="Klebsiella species tree" width="90%"></p>
 
 
 *K. pneumoniae* species complex (KpSC)

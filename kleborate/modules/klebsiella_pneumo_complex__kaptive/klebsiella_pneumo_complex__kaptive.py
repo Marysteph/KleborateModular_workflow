@@ -2,7 +2,8 @@
 This module contains classes for interacting with bacterial genome assemblies and contigs and a pipeline
 to type them.
 
-Copyright 2023 Tom Stanton (tomdstanton@gmail.com)
+Copyright 2024 Mary Maranga, Kat Holt, Tom Stanton, Ryan Wick
+https://github.com/klebgenomics/KleborateModular/
 https://github.com/klebgenomics/Kaptive
 
 This file is part of Kaptive. Kaptive is free software: you can redistribute it and/or modify
@@ -34,30 +35,30 @@ def prerequisite_modules():
     return []
 
 
-
 def get_headers():
     full_headers = [
-    'k_Assembly','k_Best match locus','k_Best match type','k_Confidence','k_Problems','k_Identity','k_Coverage','k_Length discrepancy','k_Expected genes in locus','k_Expected genes in locus, details',
-    'k_Missing expected genes','k_Other genes in locus','k_Other genes in locus, details','k_Expected genes outside locus','k_Expected genes outside locus, details',
-    'k_Other genes outside locus','k_Other genes outside locus, details','k_Truncated genes, details','o_Assembly','o_Best match locus','o_Best match type','o_Confidence',
-    'o_Problems','o_Identity','o_Coverage','o_Length discrepancy','o_Expected genes in locus','o_Expected genes in locus, details','o_Missing expected genes',
-    'o_Other genes in locus','o_Other genes in locus, details','o_Expected genes outside locus','o_Expected genes outside locus, details','o_Other genes outside locus','o_Other genes outside locus, details',
-    'o_Truncated genes, details'
-        
+        'K_locus', 'K_type', 'K_Confidence', 'K_Problems', 'K_Identity', 
+        'K_Coverage', 'K_Length discrepancy', 'K_Expected genes in locus', 
+        'K_Expected genes in locus, details', 'K_Missing expected genes', 
+        'K_Other genes in locus', 'K_Other genes in locus, details', 
+        'K_Expected genes outside locus', 'K_Expected genes outside locus, details', 
+        'K_Other genes outside locus', 'K_Other genes outside locus, details',
+        'O_locus', 'O_type', 'O_Confidence', 'O_Problems', 'O_Identity', 
+        'O_Coverage', 'O_Length discrepancy', 'O_Expected genes in locus', 
+        'O_Expected genes in locus, details', 'O_Missing expected genes', 
+        'O_Other genes in locus', 'O_Other genes in locus, details', 
+        'O_Expected genes outside locus', 'O_Expected genes outside locus, details', 
+        'O_Other genes outside locus', 'O_Other genes outside locus, details'
     ]
     stdout_headers = []
     return full_headers, stdout_headers
-
-
-
 
 
 def add_cli_options(parser):
     module_name = os.path.basename(__file__)[:-3]
     group = parser.add_argument_group(f'{module_name} module')
     group.add_argument('-t', '--threads', type=check_cpus, default=1, metavar='',
-                      help="Number of threads for alignment (default: %(default)s)")
-
+                      help="Kaptive number of threads for alignment (default: %(default)s)")
 
     return group
 
@@ -81,8 +82,8 @@ def get_results(assembly, minimap2_index, args, previous_results):
     full_headers, _ = get_headers()
     
     # Filter for k_ and o_ prefixed headers
-    k_headers = [h for h in full_headers if h.startswith('k_')]
-    o_headers = [h for h in full_headers if h.startswith('o_')]
+    k_headers = [h for h in full_headers if h.startswith('K_')]
+    o_headers = [h for h in full_headers if h.startswith('O_')]
 
     if not isinstance(assembly, list):
         assembly = [assembly]
@@ -98,24 +99,23 @@ def get_results(assembly, minimap2_index, args, previous_results):
     results_dict = {}
 
     for assembly_path in assembly_paths:
-        # Process k results
+        # Process k typing results
         k_results = typing_pipeline(assembly_path, k_db, threads=args.threads)
         k_result_table = k_results.as_table()
         for line in k_result_table.split('\n'):
             if line:
-                parts = line.split('\t')
-                for key, value in zip(k_headers, parts):  # Use filtered k_headers
+                parts = line.split('\t')[1:-1]  # Slice to exclude the first and last fiels
+                for key, value in zip(k_headers, parts):  
                     results_dict[key] = value
 
-        # Process o results
+        # Process O typing results
         o_results = typing_pipeline(assembly_path, o_db, threads=args.threads)
         o_result_table = o_results.as_table()
         for line in o_result_table.split('\n'):
             if line:
-                parts = line.split('\t')
-                for key, value in zip(o_headers, parts):  # Use filtered o_headers
+                parts = line.split('\t')[1:-1]  # Slice to exclude the first and last field
+                for key, value in zip(o_headers, parts):  
                     results_dict[key] = value
-
     return results_dict
 
 

@@ -74,59 +74,107 @@ def parse_arguments(args, all_module_names, modules):
     return parser.parse_args(args)
 
 
+def main(): 
+  all_module_names, modules = import_modules()
+  args = parse_arguments(sys.argv[1:], all_module_names, modules)
+  print_modules(args, all_module_names, modules)
+  module_names, check_module_list, pass_modules = get_used_module_names(args, all_module_names, get_presets())  
+  module_names, module_run_order, external_programs = check_modules(args, modules, module_names, check_module_list, pass_modules)
+  check_assemblies(args)
 
-def main():
-    all_module_names, modules = import_modules()
-    args = parse_arguments(sys.argv[1:], all_module_names, modules)
-    print_modules(args, all_module_names, modules)
-    module_names, check_module_list, pass_modules = get_used_module_names(args, all_module_names, get_presets()) 
-    module_names, module_run_order, external_programs = check_modules(args, modules, module_names, check_module_list, pass_modules)
-    check_assemblies(args)
+  full_headers, stdout_headers = get_headers(module_names, modules)  
+  output_headers(full_headers, stdout_headers, args.outfile) 
 
-    top_headers, full_headers, stdout_headers = get_headers(module_names, modules)
-    output_headers(top_headers, full_headers, stdout_headers, args.outfile)
+  # Define preset_check_modules based on presets
+  presets = get_presets()  
+  preset_check_modules = [module for module, _ in presets[args.preset]['check']]
 
-    # Define preset_check_modules based on presets function
-    presets = get_presets() 
-    preset_check_modules = [module for module, _ in presets[args.preset]['check']]
+  for assembly in args.assemblies:
+    with tempfile.TemporaryDirectory() as temp_dir:
+        unzipped_assembly = gunzip_assembly_if_necessary(assembly, temp_dir)
+        minimap2_index = build_minimap2_index(assembly, unzipped_assembly, external_programs, temp_dir)
+        results = {'assembly': assembly}
 
-    for assembly in args.assemblies:
-        with tempfile.TemporaryDirectory() as temp_dir:
-            unzipped_assembly = gunzip_assembly_if_necessary(assembly, temp_dir)
-            minimap2_index = build_minimap2_index(assembly, unzipped_assembly, external_programs, temp_dir)
-            results = {'assembly': assembly}
+        pass_check = True  # default, assume no check and run all modules
 
-            pass_check = True  # default, assume no check and run all modules
+        # if we have 'check' modules in the preset, run these and see if we pass
+        if len(check_module_list) > 0: 
 
-            # if we have 'check' modules in the preset, run these and see if we pass
-            if len(check_module_list) > 0:  
+            for module, check in presets[args.preset]['check']:
+                try:
+                    module_results = modules[module].get_results(unzipped_assembly, minimap2_index, args, results)
 
-                for module, check in presets[args.preset]['check']:
+                    results.update({f'{module}__{header}': result for header, result in module_results.items()})
+                    check_function = globals()[check]
+
+                    if not check_function(module_results):
+                        pass_check = False
+                        print(f"Assembly {assembly} failed in check {check}. Continuing with next assembly.")
+                        break  # Exit the for loop since this assembly failed the check
+
+                except Exception as e:
+                    print(f"Error encountered while processing {assembly} with {module}: {e}. Continuing with next assembly.")
+                    pass_check = False
+                    break  # Exit the for loop since an error occurred
+
+        # proceed through all other modules
+        if pass_check:
+            for module in module_run_order:
+                if module not in preset_check_modules:
                     module_results = modules[module].get_results(unzipped_assembly, minimap2_index, args, results)
 
                     results.update({f'{module}__{header}': result for header, result in module_results.items()})
 
-                    #check_function = getattr(__main__, check)  # the function whose name is specified in the presets
-                    check_function = globals()[check]
+        # write results
+        output_results(full_headers, stdout_headers, args.outfile, results)
 
+  
 
-                    if not check_function(module_results):
-                        pass_check = False
+# def main(): 
+#  all_module_names, modules = import_modules()
+#  args = parse_arguments(sys.argv[1:], all_module_names, modules)
+#  print_modules(args, all_module_names, modules)
+#  module_names, check_module_list, pass_modules = get_used_module_names(args, all_module_names, get_presets())  
+#  module_names, module_run_order, external_programs = check_modules(args, modules, module_names, check_module_list, pass_modules)
+#  check_assemblies(args)
 
-            # proceed through all other modules
-            if pass_check:
+#  full_headers, stdout_headers = get_headers(module_names, modules)  
+#  output_headers(full_headers, stdout_headers, args.outfile)  
 
-                for module in module_run_order:
-                   
+#  # Define preset_check_modules based on presets
+#  presets = get_presets()  # added this to retrieve the presets dictionary
+#  preset_check_modules = [module for module, _ in presets[args.preset]['check']]
 
-                    if module not in preset_check_modules:
+#  for assembly in args.assemblies:
+#      with tempfile.TemporaryDirectory() as temp_dir:
+#          unzipped_assembly = gunzip_assembly_if_necessary(assembly, temp_dir)
+#          minimap2_index = build_minimap2_index(assembly, unzipped_assembly, external_programs, temp_dir)
+#          results = {'assembly': assembly}
 
-                        module_results = modules[module].get_results(unzipped_assembly, minimap2_index, args, results)
+#          pass_check = True  # default, assume no check and run all modules
 
-                        results.update({f'{module}__{header}': result for header, result in module_results.items()})
+#          # if we have 'check' modules in the preset, run these and see if we pass
+#          if len(check_module_list) > 0:  
 
-            # write results
-            output_results(full_headers, stdout_headers, args.outfile, results)
+#              for module, check in presets[args.preset]['check']:
+#                  module_results = modules[module].get_results(unzipped_assembly, minimap2_index, args, results)
+
+#                  results.update({f'{module}__{header}': result for header, result in module_results.items()})
+#                  check_function = globals()[check]
+
+#                  if not check_function(module_results):
+#                      pass_check = False
+
+#          # proceed through all other modules
+#          if pass_check:
+#              for module in module_run_order:
+#                  if module not in preset_check_modules:
+#                      module_results = modules[module].get_results(unzipped_assembly, minimap2_index, args, results)
+
+#                      results.update({f'{module}__{header}': result for header, result in module_results.items()})
+
+#          # write results
+#          output_results(full_headers, stdout_headers, args.outfile, results)
 
 
 def print_modules(args, all_module_names, modules):
@@ -159,7 +207,7 @@ def get_presets():
     }
 
     kosc_modules = {
-        'check': ('enterobacterales__species', 'is_ko_complex'),
+        'check': [('enterobacterales__species', 'is_ko_complex')],
         'pass': [
             'general__contig_stats',
             'klebsiella_oxytoca_complex__mlst', 'klebsiella__ybst', 'klebsiella__cbst', 'klebsiella__abst', 'klebsiella__smst', 'klebsiella__rmst'
@@ -167,7 +215,7 @@ def get_presets():
     }
 
     escherichia_modules = {
-        'check': ('enterobacterales__species', 'is_escherichia'),
+        'check': [('enterobacterales__species', 'is_escherichia')],
         'pass': [
             'general__contig_stats',
             'escherichia__mlst_achtman', 'escherichia__mlst_pasteur'
@@ -194,7 +242,7 @@ def add_module_cli_arguments(parser, args, all_module_names, modules):
                 a.help = argparse.SUPPRESS
 
 
-def get_used_module_names(args, all_module_names, presets): # modified on saturday to return 3 values
+def get_used_module_names(args, all_module_names, presets): 
     if args.preset is None and args.modules is None:
         sys.exit('Error: either --preset or --modules is required')
 
@@ -321,14 +369,15 @@ def get_headers(module_names, modules):
     headers, the module name is added before each header in full_headers and stdout_header,
     separated by a double-underscore.
     """
-    top_headers, full_headers, stdout_headers = [''], ['assembly'], ['assembly']
+    #top_headers, full_headers, stdout_headers = [''], ['assembly'], ['assembly']
+    _,full_headers, stdout_headers = [''], ['assembly'], ['assembly']
     for module_name in module_names:
         module_full, module_stdout = modules[module_name].get_headers()
-        top_headers.append(module_name)
-        top_headers += [''] * (len(module_full) - 1)
+        #top_headers.append(module_name)
+        #top_headers += [''] * (len(module_full) - 1)
         full_headers += [f'{module_name}__{h}' for h in module_full]
         stdout_headers += [f'{module_name}__{h}' for h in module_stdout]
-    return top_headers, full_headers, stdout_headers
+    return full_headers, stdout_headers
 
 
 def gunzip_assembly_if_necessary(assembly, temp_dir):
@@ -360,8 +409,7 @@ def decompress_file(in_file, out_file):
         s = i.read()
         o.write(s)
 
-
-def output_headers(top_headers, full_headers, stdout_headers, outfile):
+def output_headers(full_headers, stdout_headers, outfile):
     """
     This function prints headers to stdout and writes headers to the output file. Module names are
     trimmed off to make the headers shorter and easier to read.
@@ -370,13 +418,25 @@ def output_headers(top_headers, full_headers, stdout_headers, outfile):
     trimmed_full_headers = [h.split('__')[-1] for h in full_headers]
     print('\t'.join(trimmed_stdout_headers))
     with open(outfile, 'wt') as o:
-        o.write('\t'.join(top_headers))
-        o.write('\n')
         o.write('\t'.join(trimmed_full_headers))
-        o.write('\n')
 
 
-# def output_results(full_headers, stdout_headers, outfile, results):
+def output_results(full_headers, stdout_headers, outfile, results):
+    """
+    This function writes the results to stdout and the output file.
+    """
+    print('\t'.join([str(results.get(x, "-")).strip("[] ").replace("'", "") for x in stdout_headers]))
+    with open(outfile, 'at') as o:
+        if o.tell() > 0:  # Check if the file is not empty
+            o.write('\n')  # Add a newline to separate from previous content
+        o.write('\t'.join([str(results.get(x, "-")).strip("[] ").replace("'", "") for x in full_headers]))
+
+    for h in results.keys():
+        if h not in full_headers:
+            sys.exit(f'Error: results contained a value ({h}) that is not covered by the output headers')
+
+
+# def output_results(full_headers, stdout_headers, outfile, results): # original code
 #     print('\t'.join([str(results[x]).strip("[] ").replace("'", "") for x in stdout_headers]))
 #     with open(outfile, 'at') as o:
 #         o.write('\t'.join([str(results[x]).strip("[] ").replace("'", "") for x in full_headers]))
@@ -385,24 +445,6 @@ def output_headers(top_headers, full_headers, stdout_headers, outfile):
 #     for h in results.keys():
 #         if h not in full_headers:
 #             sys.exit(f'Error: results contained a value ({h}) that is not covered by the output headers')
-
-def output_results(full_headers, stdout_headers, outfile, results):
-    # Exclude specified keys from kaptive module
-    excluded_keys = {'k_Assembly', 'k_Truncated genes, details', 'o_Assembly', 'o_Truncated genes, details'}
-    filtered_headers = [h for h in full_headers if h not in excluded_keys]
-
-    # Output to stdout using stdout_headers
-    print('\t'.join([str(results[x]).strip("[] ").replace("'", "") for x in stdout_headers]))
-
-    # Write the filtered results to the output file
-    with open(outfile, 'at') as o:
-        o.write('\t'.join([str(results[x]).strip("[] ").replace("'", "") for x in filtered_headers]))
-        o.write('\n')
-
-    # Check for unexpected keys in the results
-    for h in results.keys():
-        if h not in filtered_headers and h not in stdout_headers:  # Updated to include stdout_headers in the check
-            sys.exit(f'Error: results contained a value ({h}) that is not covered by the output headers')
 
 
 def paper_refs():

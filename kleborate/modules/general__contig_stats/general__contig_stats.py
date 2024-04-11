@@ -1,7 +1,6 @@
 """
-Copyright 2023 Kat Holt
-Copyright 2023 Ryan Wick (rrwick@gmail.com)
-https://github.com/katholt/Kleborate/
+Copyright 2023 Kat Holt, Ryan Wick (rrwick@gmail.com), Mary Maranga (gathonimaranga@gmail.com)
+https://github.com/klebgenomics/KleborateModular/
 
 This file is part of Kleborate. Kleborate is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by the Free Software Foundation,
@@ -115,22 +114,61 @@ def load_species_specifications(file_path):
     return species_specifications
 
 
-def get_qc_warnings(total_size, n50, ambiguous_bases, species, species_specification_dict): 
+def get_qc_warnings(total_size, n50, ambiguous_bases, species, species_specification_dict):
     warnings = []
-    species_spec = species_specification_dict[species]
+
+    # Initialize species_spec as None
+    species_spec = None
+
+    # List of species prefixes to check
+    species_prefixes = ['Klebsiella', 'Escherichia']
+
+    # Iterate through the species specification dictionary
+    for spec in species_specification_dict.keys():
+        # Check if the spec starts with any of the prefixes in species_prefixes
+        if any(spec.startswith(prefix) for prefix in species_prefixes):
+            # If it does, use this spec's specifications
+            species_spec = species_specification_dict[spec]
+            break
+
+    # If no matching species spec is found, return a warning
+    if species_spec is None:
+        return 'species_not_found'
+
     min_size, max_size = species_spec['min_genome_size'], species_spec['max_genome_size']
 
     if total_size < min_size:
         warnings.append('total_size')
     elif total_size > max_size:
         warnings.append('total_size')
-    
 
     if n50 < 10000:
         warnings.append('N50')
     if 'yes' in ambiguous_bases:
         warnings.append('ambiguous_bases')
+
     if warnings:
         return ','.join(warnings)
     else:
         return '-'
+
+
+# def get_qc_warnings(total_size, n50, ambiguous_bases, species, species_specification_dict): 
+#     warnings = []
+#     species_spec = species_specification_dict[species]
+#     min_size, max_size = species_spec['min_genome_size'], species_spec['max_genome_size']
+
+#     if total_size < min_size:
+#         warnings.append('total_size')
+#     elif total_size > max_size:
+#         warnings.append('total_size')
+    
+
+#     if n50 < 10000:
+#         warnings.append('N50')
+#     if 'yes' in ambiguous_bases:
+#         warnings.append('ambiguous_bases')
+#     if warnings:
+#         return ','.join(warnings)
+#     else:
+#         return '-'

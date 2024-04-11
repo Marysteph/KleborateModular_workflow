@@ -1,7 +1,6 @@
 """
-Copyright 2023 Kat Holt
-Copyright 2023 Ryan Wick (rrwick@gmail.com)
-https://github.com/katholt/Kleborate/
+Copyright 2023 Kat Holt, Ryan Wick (rrwick@gmail.com), Mary Maranga (gathonimaranga@gmail.com)
+https://github.com/klebgenomics/KleborateModular/
 
 This file is part of Kleborate. Kleborate is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by the Free Software Foundation,
@@ -29,8 +28,8 @@ def prerequisite_modules():
 
 
 def get_headers():
-    full_headers = ['st', 'gapA', 'infB', 'mdh', 'pgi', 'phoE', 'rpoB', 'tonB']
-    stdout_headers = ['st']
+    full_headers = ['ST', 'gapA', 'infB', 'mdh', 'pgi', 'phoE', 'rpoB', 'tonB']
+    stdout_headers = ['ST']
     return full_headers, stdout_headers
 
 
@@ -76,7 +75,7 @@ def get_results(assembly, minimap2_index, args, previous_results):
                           args.klebsiella_pneumo_complex__mlst_min_identity, args.klebsiella_pneumo_complex__mlst_min_coverage,
                           args.klebsiella_pneumo_complex__mlst_required_exact_matches)
 
-    return {'st': st,
+    return {'ST': st,
             'gapA': alleles['gapA'], 'infB': alleles['infB'], 'mdh': alleles['mdh'],
             'pgi': alleles['pgi'], 'phoE': alleles['phoE'], 'rpoB': alleles['rpoB'],
             'tonB': alleles['tonB']}
