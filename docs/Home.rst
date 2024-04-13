@@ -9,7 +9,7 @@ Kleborate screens genome assemblies of *Klebsiella pneumoniae* and the *Klebsiel
 
 * MLST sequence type
 * species (e.g. *K. pneumoniae*\ , *K. quasipneumoniae*\ , *K. variicola*\ , etc.)
-* ICE\ :raw-html:`<i>Kp</i>` associated virulence loci: yersiniabactin (*ybt*), colibactin (*clb*), salmochelin (*iro*), hypermucoidy (*rmpA*)
+* *ICE* : *Kp* associated virulence loci: yersiniabactin (*ybt*), colibactin (*clb*), salmochelin (*iro*), hypermucoidy (*rmpA*)
 * virulence plasmid associated loci: salmochelin (\ *iro*\ ), aerobactin (\ *iuc*\ ), hypermucoidy (\ *rmpA*\ , *rmpA2*\ )
 * antimicrobial resistance determinants: acquired genes, SNPs, gene truncations and intrinsic β-lactamases
 * K (capsule) and O antigen (LPS) serotype prediction, via *wzi* alleles and `Kaptive <https://github.com/katholt/Kaptive>`_
@@ -18,7 +18,7 @@ For *Klebsiella oxytoca* species complex Kleborate will accurately determine the
 
 
 * MLST sequence type
-* ICE\ :raw-html:`<i>Kp</i>` associated virulence loci: yersiniabactin (*ybt*), colibactin (*clb*), salmochelin (*iro*), hypermucoidy (*rmpA*)
+* *ICE* : *Kp* associated virulence loci: yersiniabactin (*ybt*), colibactin (*clb*), salmochelin (*iro*), hypermucoidy (*rmpA*)
 * virulence plasmid associated loci: salmochelin (\ *iro*\ ), aerobactin (\ *iuc*\ ), hypermucoidy (\ *rmpA*\ , *rmpA2*\ )
 
 For *escherichia coli* will determine the species and report MLST sequence type using achtman and pasteur sequence types
