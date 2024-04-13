@@ -26,8 +26,8 @@ Note that the [[MLST]] scheme applies across the entire species complex.
    :header-rows: 1
 
    * - Species
-     - Kp phylogroup\ :raw-html-m2r:`<sup>a</sup>`
-     - Kp phylogroup (alternative)\ :raw-html-m2r:`<sup>b</sup>`
+     - Kp phylogroup\ :sup:`a`
+     - Kp phylogroup (alternative)\ :sup:`b`
      - Reference
    * - *K. pneumoniae*
      - Kp1
@@ -59,14 +59,14 @@ Note that the [[MLST]] scheme applies across the entire species complex.
      - `Rodrigues et al. 2019 Res Microbiol ﻿S0923-2508:﻿30019-1 <https://www.sciencedirect.com/science/article/pii/S0923250819300191?via%3Dihub>`_ (described as *africanensis* in this paper)
 
 
-:raw-html-m2r:`<sup>a</sup>` Kp phylogroup numbers as described in `Rodrigues et al. 2019 <https://www.sciencedirect.com/science/article/pii/S0923250819300191?via%3Dihub>`_
+:sup:`a` Kp Kp phylogroup numbers as described in `Rodrigues et al. 2019 <https://www.sciencedirect.com/science/article/pii/S0923250819300191?via%3Dihub>`_
 
-:raw-html-m2r:`<sup>b</sup>` alternative (older) Kp phylogroup numbers as described in `Brisse et al. 2001 <https://ijs.microbiologyresearch.org/content/journal/ijsem/10.1099/00207713-51-3-915#tab2>`_ and `Fevre et al. 2005 <https://aac.asm.org/content/49/12/5149>`_ prior to the identification of *K. variicola* subsp *tropica*\ , *K. quasivariicola* and *K. africana*.
+:sup:`b` alternative (older) Kp phylogroup numbers as described in `Brisse et al. 2001 <https://ijs.microbiologyresearch.org/content/journal/ijsem/10.1099/00207713-51-3-915#tab2>`_ and `Fevre et al. 2005 <https://aac.asm.org/content/49/12/5149>`_ prior to the identification of *K. variicola* subsp *tropica*\ , *K. quasivariicola* and *K. africana*.
 
 Rhinoscleromatis and Ozaenae
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Two clonal lineages of *K. pneumoniae* also have subspecies names, due to their association with specific disease syndromes: *K. pneumoniae* subsp. *rhinoscleromatis* (cause of 'rhinoscleroma', a chronic granulomatous infection of the nose and upper airways of humans, typically K3 capsule carrying *iuc2a* and ICE\ :raw-html-m2r:`<i>Kp</i>`\ ) and *K. pneumoniae* subsp. *ozaenae* (cause of atrophic rhinitis or 'ozena', but also found colonising or infecting other sites, typically K5 or K4 capsule carrying *iuc4* and ICE\ :raw-html-m2r:`<i>Kp</i>`\ ). However phylogenetically, these sit squarely within the general population of *K. pneumoniae*\ , and are best thought of as hypervirulent `clonal groups within this species <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2656620/>`_.
+Two clonal lineages of *K. pneumoniae* also have subspecies names, due to their association with specific disease syndromes: *K. pneumoniae* subsp. *rhinoscleromatis* (cause of 'rhinoscleroma', a chronic granulomatous infection of the nose and upper airways of humans, typically K3 capsule carrying *iuc2a* and ICE *Kp* and *K. pneumoniae* subsp. *ozaenae* (cause of atrophic rhinitis or 'ozena', but also found colonising or infecting other sites, typically K5 or K4 capsule carrying *iuc4* and ICE *Kp*. However phylogenetically, these sit squarely within the general population of *K. pneumoniae*\ , and are best thought of as hypervirulent `clonal groups within this species <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2656620/>`_.
 
 Kleborate therefore reports these as *K. pneumoniae* in the species column (on the basis of mash distances to the tree above), but will identify them based on MLST and annotate the subspecies in the 'MLST' column, see `MLST page <https://github.com/katholt/Kleborate/wiki/MLST#rhinoscleromatis-and-ozaenae>`_ for details.
 
