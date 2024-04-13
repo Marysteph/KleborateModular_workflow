@@ -16,7 +16,7 @@ The *ybt*\ , *clb*\ , *iuc*\ , *iro* and *rmpADC* locus-specific ST schemes are 
 Notes on virulence allele reporting:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Virulence alleles are treated in the same way as [[MLST]] alleles:
+Virulence alleles are treated in the same way as [MLST] alleles:
 
 
 * In order to consider a Minimap2 hit, it must exceed both 80% identity and 40% coverage (adjustable via the --min_spurious_identity and --min_spurious_coverage options).
@@ -38,7 +38,7 @@ Yersiniabactin and colibactin (primarily mobilised by ICE *Kp*)
 
 We previously explored the diversity of the *K. pneumoniae* integrative conjugative element (ICE *Kp*), which mobilises the yersiniabactin locus *ybt*, using genomic analysis of a diverse set of 2498 *Klebsiella* (see `this paper <http://mgen.microbiologyresearch.org/content/journal/mgen/10.1099/mgen.0.000196>`_\ ). Overall, we found *ybt* in about a third of all *K. pneumoniae* genomes (and *clb* in about 14%). We identified 17 distinct lineages of *ybt* (see figure) embedded within 14 structural variants of ICE *Kp* that can integrate at any of four tRNA-Asn sites in the chromosome. Based on this analysis, we developed a MLST-style approach for assigning yersiniabactin sequence types (YbST) and colibactin sequence types (CbST), which is implemented in KleborateModular. 
 
-The allele databases and schemes were updated in June 2021 following inspection of 250 genomes for which Kleborate had identified putative novel ybt sequence types/lineages (unpublished). This update included the addition of 11 novel ybt lineages and 8 novel ICE *Kp* variants for yersiniabactin, increasing the total number of ybt lineages from 17 to 28 and ICE *Kp* variants from 14 to 22 (see figure below). Annotations for all reference ICE\ :raw-html-m2r:`<i>Kp</i>` sequences are available in the ICE *Kp* references folder in the data directory.
+The allele databases and schemes were updated in June 2021 following inspection of 250 genomes for which Kleborate had identified putative novel ybt sequence types/lineages (unpublished). This update included the addition of 11 novel ybt lineages and 8 novel ICE *Kp* variants for yersiniabactin, increasing the total number of ybt lineages from 17 to 28 and ICE *Kp* variants from 14 to 22 (see figure below). Annotations for all reference ICE *Kp1* sequences are available in the ICE *Kp* references folder in the data directory.
 
 
 * Three of the 28 *ybt* lineages were associated with three lineages of colibactin, with which they are co-located in the same ICE structure designated ICE *Kp* : *ybt 12* with *clb 1*\ , *ybt 1* with *clb 2* (previously defined as *clb 2A* in Lam et al. 2018), *ybt 17* with *clb 3* (previously defined as *clb 2B* in Lam et al. 2018) 
