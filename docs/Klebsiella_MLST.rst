@@ -30,7 +30,7 @@ The *K. pneumoniae* clonal group CG67 is known as *K. pneumoniae* subsp. *rhinos
    * - 67, 68, 69, 3772, 3819
      - *K. pneumoniae*
      - ST67 (subsp. rhinoscleromatis)
-   * - 90, 91, 92, 93, 95, 96, 97, 381, 777, 3193 :raw-html-m2r:`<br/>` 3766, 3768, 3771, 3781, 3782, 3784, 3802, 3803
+   * 90, 91, 92, 93, 95, 96, 97, 381, 777, 3193, 3766, 3768, 3771, 3781, 3782, 3784, 3802, 3803
      - *K. pneumoniae*
      - ST91 (subsp. ozaenae)
 
