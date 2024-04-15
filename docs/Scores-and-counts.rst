@@ -17,7 +17,8 @@ Virulence score
   * 4 = aerobactin with yersiniabactin (without colibactin)
   * 5 = yersiniabactin, colibactin and aerobactin
 
-Note neither the salmochelin (\ *iro*\ ) locus nor *rmpADC* are explicitly considered in the virulence score, for simplicity. The *iro* and *rmpADC* loci typically appear alongside the aerobactin (\ *iuc*\ ) locus on the *Kp* virulence plasmids, and so presence of *iuc* (score of 3-5) generally implies presence of *iro* and *rmpADC*. However we prioritise *iuc* in the calculation of the score, as aerobactin is specifically associated with growth in blood and is a stronger predictor of the hypervirulence phenotype (see `this review <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6349525/>`_\ ). The *iro* and *rmpADC* loci are also occasionally present with *ybt*\ , in the ICE\ :raw-html-m2r:`<i>Kp</i>` variant - ICE\ :raw-html-m2r:`<i>Kp1</i>`\ , but this will still score 1.
+Note neither the salmochelin (\ *iro*\ ) locus nor *rmpADC* are explicitly considered in the virulence score, for simplicity. The *iro* and *rmpADC* loci typically appear alongside the aerobactin (\ *iuc*\ ) locus on the *Kp* virulence plasmids, and so presence of *iuc* (score of 3-5) generally implies presence of *iro* and *rmpADC*. However we prioritise *iuc* in the calculation of the score, as aerobactin is specifically associated with growth in blood and is a stronger predictor of the hypervirulence phenotype (see `this review <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6349525/>`_\ ). The *iro* and *rmpADC* loci are also occasionally present with *ybt*\ , in the ICE *Kp* variant - ICE *Kp1*, but this will still score 1.
+
 
 Resistance score
 ^^^^^^^^^^^^^^^^
