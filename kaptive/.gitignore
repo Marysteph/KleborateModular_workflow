@@ -1,0 +1,46 @@
+# Mac stuff
+.DS_Store
+
+# C extensions
+*.so
+*.o
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# BLAST databases
+*.nhr
+*.nin
+*.nsq
+
+# Distribution and packaging
+build/
+develop-eggs/
+dist/
+eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+setuptools*.zip
+
+# PyCharm
+.idea/
+
+# Test Folder
+test/
+tests/
+
+# Experimental modules
+kaptive/build.py
+kaptive/sam.py
+kaptive/reads.py
+
+# Script Folder
+scripts/
+.Rproj.user

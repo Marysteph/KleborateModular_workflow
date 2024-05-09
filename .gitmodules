@@ -1,0 +1,3 @@
+[submodule "Kaptive"]
+	path = Kaptive
+	url = https://github.com/klebgenomics/Kaptive.git
